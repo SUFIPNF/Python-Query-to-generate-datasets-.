@@ -18,7 +18,7 @@ hospitals = [{'hospital_id': i+1, 'hospital_name': gen.company()} for i in range
 patients = []
 for i in range(num_of_patients): 
     hospital_id = random.randint(1, num_of_hospitals) 
-    dob = gen.date_of_birth(min_age=0, max_age= 99) # Generates a random date of birth of patients
+    dob = gen.date_of_birth(minimum_age=0, maximum_age= 99) # Generates a random date of birth of patients
     admission_datetime = gen.date_time_between(start_date='-5y', end_date='-7d') # Generates a random admission datetime
     discharge_datetime = admission_datetime + timedelta(days=random.randint(1, 30)) # Generates a random discharge datetime
     patients.append({
@@ -38,7 +38,7 @@ for patient in patients:
     for i in range(2):  # For each patient generates 2 different diagnoses
         diagnoses.append({
             'diagnosis_id': diagnosis_id,
-            'patient_id': patients['patient_id'],
+            'patient_id': patient['patient_id'],
             'diagnosis_name': random.choice(diagnosis_types) # Randomly selects a diagnosis from the list
         })
         diagnosis_id += 1   # Increments the diagnosis_id for every next entry by 1
