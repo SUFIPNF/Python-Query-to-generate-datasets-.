@@ -1,0 +1,79 @@
+import pandas as pd # to handle dataframes
+import random # to generate random data
+from faker import Faker # Used for generating fake random Data
+from datetime import datetime, timedelta # to handle dates and times
+
+gen = Faker() # Initialize Faker instance
+Faker.seed(42) # Set seed for reproducibility
+random.seed(42)
+
+num_of_hospitals = 5
+num_of_patients = 100000
+
+# Hospital Data
+hospitals = [{'hospital_id': i+1, 'hospital_name': gen.company()} for i in range(num_of_hospitals)] 
+# Generates a list of hospitals with unique IDs and names
+
+# Patient Data
+patients = []
+for i in range(num_of_patients): 
+    hospital_id = random.randint(1, num_of_hospitals) 
+    dob = gen.date_of_birth(min_age=0, max_age= 99) # Generates a random date of birth of patients
+    admission_datetime = gen.date_time_between(start_date='-5y', end_date='-7d') # Generates a random admission datetime
+    discharge_datetime = admission_datetime + timedelta(days=random.randint(1, 30)) # Generates a random discharge datetime
+    patients.append({
+        'patient_id': i+1,
+        'hospital_id': hospital_id,
+        'patient_name': gen.name(), # Generates a random name for the patient
+        'dob': dob,
+        'admit_datetime': admission_datetime,
+        'discharge_datetime': discharge_datetime,
+    })
+    
+# Diagnosis Data
+diagnosis_types = ['diabetes', 'asthma', 'jaundice', 'pneumonia', 'cancer', 'Covid-19', 'heart disease', 'obesity', 'anemia']
+diagnoses = []  # Empty List to hold diagnosis data
+diagnosis_id = 1
+for patient in patients: 
+    for i in range(2):  # For each patient generates 2 different diagnoses
+        diagnoses.append({
+            'diagnosis_id': diagnosis_id,
+            'patient_id': patients['patient_id'],
+            'diagnosis_name': random.choice(diagnosis_types) # Randomly selects a diagnosis from the list
+        })
+        diagnosis_id += 1   # Increments the diagnosis_id for every next entry by 1
+        
+# Treatment Data
+medicines = ['Insulin', 'Metformin', 'Albuterol', 'Salmeterol', 'Lactulose', 'Ribavirin', 'Azithromycin', 'Oseltamivir', 'Cisplatin','Imatinib'
+             'Paracetamol', 'Molnupiravir', 'Aspirin', 'Atorvastatin', 'Orlistat', 'Phentermine-Topiramate']
+treatments = [] # Empty List to hold treatment data
+treatment_id = 1 
+for patient in patients: # For each patient generates 5 different treatments
+    for i in range(5):
+        treatments.append({
+            'treatment_id': treatment_id,
+            'patient_id': patient['patient_id'],
+            'medicine_name' : random.choice(medicines), # Randomly selects a medicine from the list
+            'dose_time': gen.time(pattern='%H:%M'), # Generates a random time for dose
+            'duration': random.randint(1,15) # Random duration between 1 to 15 days
+        })
+        treatment_id += 1 # Increments the treatment_id for every next entry by 1
+        
+# Billing Data
+billing = [] # Empty List to hold billing data
+for patient in patients:
+    billing.append({
+        'bill_id': patient['patient_id'], # Using patient_id as bill_id for ease of reference
+        'patient_id': patient['patient_id'], # Patient ID for reference
+        'bill_amount': round(random.uniform(150, 100000), 0)
+    })
+
+# Convert lists to DataFrames
+pd.DataFrame(hospitals).to_csv('hospitals.csv', index=False)
+pd.DataFrame(patients).to_csv('patients.csv', index=False)
+pd.DataFrame(diagnoses).to_csv('diagnoses.csv', index=False)
+pd.DataFrame(treatments).to_csv('treatments.csv', index=False)
+pd.DataFrame(billing).to_csv('billing.csv', index=False)
+
+# print confirmation message of successful creation and saving of dataframes
+print("Dataframes created and saved to CSV files successfully.")
