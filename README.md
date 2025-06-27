@@ -12,4 +12,5 @@ Possible to make small changes like :
   4. Can add or remove diagnoses as per your choice.
   5. Can change medicines in respective of the diagnose.
   6. Also possible to make changes in range of generated bills.
+
 At the end all the datasets will converted to dataframes using pandas and saved as a '.csv' file.
